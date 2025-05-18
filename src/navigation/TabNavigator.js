@@ -1,13 +1,14 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Platform } from 'react-native';
+import { Platform, TouchableOpacity, View, StyleSheet } from 'react-native';
 
 // Screens
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import SearchScreen from '../screens/SearchScreen';
 import ReelsScreen from '../screens/ReelsScreen';
+import CreatePostScreen from '../screens/CreatePostScreen';
 import CustomHeader from './CustomHeader';
 
 const Tab = createBottomTabNavigator();
@@ -15,7 +16,7 @@ const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={({ route, navigation }) => ({
         header: ({ navigation }) => <CustomHeader route={route} />,
         tabBarShowLabel: false,
         tabBarStyle: {
@@ -57,6 +58,21 @@ const TabNavigator = () => {
         }}
       />
       <Tab.Screen 
+        name="CreatePost" 
+        component={CreatePostScreen}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <View style={styles.createButtonContainer}>
+              <MaterialCommunityIcons
+                name="plus-box"
+                size={26}
+                color="#262626"
+              />
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen 
         name="Reels" 
         component={ReelsScreen}
         options={{
@@ -85,5 +101,12 @@ const TabNavigator = () => {
     </Tab.Navigator>
   );
 };
+
+const styles = StyleSheet.create({
+  createButtonContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
 
 export default TabNavigator;
