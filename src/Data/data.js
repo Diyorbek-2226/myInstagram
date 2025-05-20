@@ -1,82 +1,147 @@
-export const STORIES = [
-  {
-    id: 'your-story',
-    username: 'Your Story',
-    image: 'https://picsum.photos/200',
-    isYourStory: true,
-    hasStory: false,
-  },
-  {
-    id: '1',
-    username: 'travel_lover',
-    image: 'https://picsum.photos/201',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '2',
-    username: 'foodie_adventures',
-    image: 'https://picsum.photos/202',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '3',
-    username: 'fitness_guru',
-    image: 'https://picsum.photos/203',
-    hasStory: true,
-    viewed: true,
-  },
-  {
-    id: '4',
-    username: 'tech_geek',
-    image: 'https://picsum.photos/204',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '5',
-    username: 'art_enthusiast',
-    image: 'https://picsum.photos/205',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '6',
-    username: 'music_producer',
-    image: 'https://picsum.photos/206',
-    hasStory: true,
-    viewed: true,
-  },
-  {
-    id: '7',
-    username: 'fashion_icon',
-    image: 'https://picsum.photos/207',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '8',
-    username: 'book_worm',
-    image: 'https://picsum.photos/208',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '9',
-    username: 'pet_lover',
-    image: 'https://picsum.photos/209',
-    hasStory: true,
-    viewed: false,
-  },
-  {
-    id: '10',
-    username: 'nature_photographer',
-    image: 'https://picsum.photos/210',
-    hasStory: true,
-    viewed: false,
-  },
-];
+export const USER_STORIES = {
+  'your-story': [
+    {
+      id: 'your-story-1',
+      username: 'Your Story',
+      image: 'https://picsum.photos/200',
+      isYourStory: true,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'travel_lover': [
+    {
+      id: 'travel_story_1',
+      username: 'travel_lover',
+      image: 'https://picsum.photos/201',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+    {
+      id: 'travel_story_2',
+      username: 'travel_lover',
+      image: 'https://picsum.photos/211',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'foodie_adventures': [
+    {
+      id: 'foodie_story_1',
+      username: 'foodie_adventures',
+      image: 'https://picsum.photos/202',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+   'fitness_guru': [
+    {
+      id: 'fitness_story_1',
+      username: 'fitness_guru',
+      image: 'https://picsum.photos/203',
+      hasStory: true,
+      viewed: true,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'tech_geek': [
+    {
+      id: 'tech_story_1',
+      username: 'tech_geek',
+      image: 'https://picsum.photos/204',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+   'art_enthusiast': [
+    {
+      id: 'art_story_1',
+      username: 'art_enthusiast',
+      image: 'https://picsum.photos/205',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'music_producer': [
+    {
+      id: 'music_story_1',
+      username: 'music_producer',
+      image: 'https://picsum.photos/206',
+      hasStory: true,
+      viewed: true,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'fashion_icon': [
+    {
+      id: 'fashion_story_1',
+      username: 'fashion_icon',
+      image: 'https://picsum.photos/207',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'book_worm': [
+    {
+      id: 'book_story_1',
+      username: 'book_worm',
+      image: 'https://picsum.photos/208',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+   'pet_lover': [
+    {
+      id: 'pet_story_1',
+      username: 'pet_lover',
+      image: 'https://picsum.photos/209',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+  'nature_photographer': [
+    {
+      id: 'nature_story_1',
+      username: 'nature_photographer',
+      image: 'https://picsum.photos/210',
+      hasStory: true,
+      viewed: false,
+      type: 'image',
+      duration: 5000,
+    },
+  ],
+};
+
+export const STORIES = Object.entries(USER_STORIES).map(([userId, stories]) => ({
+  id: userId,
+  username: stories[0].username,
+  image: stories[0].image,
+  hasStory: true,
+  viewed: stories[0].viewed || false,
+  isYourStory: userId === 'your-story',
+  user: {
+    username: stories[0].username,
+    id: userId
+  }
+}));
 
 export const POSTS = [
   {

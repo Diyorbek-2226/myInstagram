@@ -23,9 +23,21 @@ const TabNavigator = () => {
           borderTopWidth: 0.5,
           borderTopColor: '#dbdbdb',
           elevation: 0,
-          height: Platform.OS === 'ios' ? 80 : 60,
-          paddingBottom: Platform.OS === 'ios' ? 30 : 10,
+          height: Platform.OS === 'ios' ? 65 : 50,
+          paddingBottom: Platform.OS === 'ios' ? 20 : 5,
+          paddingTop: 5,
           backgroundColor: '#fff',
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: -2,
+          },
+          shadowOpacity: 0.1,
+          shadowRadius: 3,
         },
         tabBarActiveTintColor: '#262626',
         tabBarInactiveTintColor: '#262626',
@@ -38,7 +50,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'home' : 'home-outline'}
-              size={26}
+              size={24}
               color="#262626"
             />
           ),
@@ -51,7 +63,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name="magnify"
-              size={26}
+              size={24}
               color="#262626"
             />
           ),
@@ -65,7 +77,7 @@ const TabNavigator = () => {
             <View style={styles.createButtonContainer}>
               <MaterialCommunityIcons
                 name="plus-box"
-                size={26}
+                size={24}
                 color="#262626"
               />
             </View>
@@ -79,7 +91,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'play-box' : 'play-box-outline'}
-              size={26}
+              size={24}
               color="#262626"
             />
           ),
@@ -92,7 +104,7 @@ const TabNavigator = () => {
           tabBarIcon: ({ focused }) => (
             <MaterialCommunityIcons
               name={focused ? 'account-circle' : 'account-circle-outline'}
-              size={26}
+              size={24}
               color="#262626"
             />
           ),
@@ -106,6 +118,7 @@ const styles = StyleSheet.create({
   createButtonContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: -5,
   },
 });
 

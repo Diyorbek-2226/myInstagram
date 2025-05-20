@@ -4,28 +4,19 @@ import StoriesList from '../components/StoriesList';
 import Post from '../components/Post';
 import { STORIES } from '../Data/data';
 import { POSTS } from '../Data/data';
-// Mock data
 
-
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-white">
       <FlatList
         data={POSTS}
-        renderItem={({ item }) => <Post post={item} />}
+        renderItem={({ item }) => <Post post={item} navigation={navigation} />}
         keyExtractor={item => item.id}
-        ListHeaderComponent={<StoriesList stories={STORIES} />}
+        ListHeaderComponent={<StoriesList stories={STORIES} navigation={navigation} />}
         showsVerticalScrollIndicator={false}
       />
     </View>
   );
-};
-
-const styles = {
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
 };
 
 export default HomeScreen;

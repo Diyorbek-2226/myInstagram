@@ -1,88 +1,54 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const StoryItem = ({ story }) => {
+const StoryItem = ({ story, navigation }) => {
+  const navigateToStoryViewer = () => {
+    console.log('Navigating to StoryViewer with userId:', story.user.username);
+    navigation.navigate('StoryViewer', { userId: story.user.username });
+  };
+
+  const navigateToProfile = () => {
+    if (!story.isYourStory) {
+      navigation.navigate('UserProfile', {
+        userId: story.userId,
+        username: story.username,
+      });
+    }
+  };
+
   return (
-    <TouchableOpacity style={styles.storyContainer}>
-      <View style={styles.storyImageContainer}>
+    <TouchableOpacity 
+      className="items-center mx-2 w-[70px]"
+      onPress={navigateToStoryViewer}
+    >
+      <View className="relative mb-1.5">
         {story.hasStory && !story.viewed ? (
           <LinearGradient
             colors={['#FF8501', '#FF0099', '#FF0099']}
-            style={styles.storyGradient}
+            className="w-[68px] h-[68px] rounded-[34px] p-0.5"
           >
-            <View style={styles.storyImageWrapper}>
-              <Image source={{ uri: story.image }} style={styles.storyImage} />
+            <View className="w-16 h-16 rounded-[32px] border-2 border-white overflow-hidden">
+              <Image source={{ uri: story.image }} className="w-full h-full" />
             </View>
           </LinearGradient>
         ) : (
-          <View style={[styles.storyImageWrapper, story.viewed && styles.viewedStory]}>
-            <Image source={{ uri: story.image }} style={styles.storyImage} />
+          <View className={`w-16 h-16 rounded-[32px] border-2 overflow-hidden ${story.viewed ? 'border-gray-300' : 'border-white'}`}>
+            <Image source={{ uri: story.image }} className="w-full h-full" />
           </View>
         )}
         {story.isYourStory && (
-          <View style={styles.addStoryButton}>
+          <View className="absolute bottom-0 right-0 bg-blue-500 w-5 h-5 rounded-full items-center justify-center border-2 border-white">
             <MaterialCommunityIcons name="plus" size={14} color="#fff" />
           </View>
         )}
       </View>
-      <Text style={styles.storyUsername} numberOfLines={1}>
+      <Text className="text-xs text-center text-gray-800" numberOfLines={1}>
         {story.isYourStory ? 'Your Story' : story.username}
       </Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  storyContainer: {
-    alignItems: 'center',
-    marginHorizontal: 8,
-    width: 70,
-  },
-  storyImageContainer: {
-    position: 'relative',
-    marginBottom: 5,
-  },
-  storyGradient: {
-    width: 68,
-    height: 68,
-    borderRadius: 34,
-    padding: 2,
-  },
-  storyImageWrapper: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 2,
-    borderColor: '#fff',
-    overflow: 'hidden',
-  },
-  viewedStory: {
-    borderColor: '#dbdbdb',
-  },
-  storyImage: {
-    width: '100%',
-    height: '100%',
-  },
-  addStoryButton: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#0095f6',
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
-  storyUsername: {
-    fontSize: 12,
-    textAlign: 'center',
-    color: '#262626',
-  },
-});
 
 export default StoryItem;

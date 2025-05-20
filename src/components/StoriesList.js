@@ -1,32 +1,21 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, View } from 'react-native';
 import StoryItem from './StoryItem';
 
-const StoriesList = ({ stories }) => {
+const StoriesList = ({ stories, navigation }) => {
   return (
-    <View style={styles.storiesContainer}>
+    <View className="border-b border-gray-300 pb-2.5 pt-2.5">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.storiesList}
+        contentContainerStyle={{ paddingHorizontal: 10 }}
       >
         {stories.map(story => (
-          <StoryItem key={story.id} story={story} />
+          <StoryItem key={story.id} story={story} navigation={navigation} />
         ))}
       </ScrollView>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  storiesContainer: {
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#dbdbdb',
-    paddingVertical: 10,
-  },
-  storiesList: {
-    paddingHorizontal: 10,
-  },
-});
 
 export default StoriesList;

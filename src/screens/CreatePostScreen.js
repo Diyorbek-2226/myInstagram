@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
   FlatList,
@@ -10,10 +9,9 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
-  ScrollView,
   Alert,
 } from 'react-native';
-import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import * as MediaLibrary from 'expo-media-library';
 
@@ -122,7 +120,7 @@ const CreatePostScreen = ({ navigation }) => {
 
     if (!result.canceled) {
       setSelectedImage(result.assets[0].uri);
-      loadMediaItems(); // Refresh media library to include the new photo
+      loadMediaItems();
     }
   };
 
@@ -133,17 +131,17 @@ const CreatePostScreen = ({ navigation }) => {
       
     return (
       <TouchableOpacity 
-        style={[styles.mediaItem, isSelected && styles.selectedMediaItem]} 
+        className={`w-[${THUMB_SIZE}px] h-[${THUMB_SIZE}px] p-px ${isSelected ? 'opacity-70' : ''}`}
         onPress={() => handleSelectImage(item.uri)}
       >
-        <Image source={{ uri: item.uri }} style={styles.mediaThumbnail} />
+        <Image source={{ uri: item.uri }} className="w-full h-full" />
         {isMultiSelectMode && isSelected && (
-          <View style={styles.selectionIndicator}>
-            <Text style={styles.selectionNumber}>{selectedImages.indexOf(item.uri) + 1}</Text>
+          <View className="absolute top-1.5 right-1.5 w-5.5 h-5.5 rounded-full bg-blue-500 justify-center items-center border-2 border-white">
+            <Text className="text-white text-xs font-bold">{selectedImages.indexOf(item.uri) + 1}</Text>
           </View>
         )}
         {item.mediaType === 'video' && (
-          <View style={styles.videoBadge}>
+          <View className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-black/70 justify-center items-center">
             <Ionicons name="play" size={12} color="#fff" />
           </View>
         )}
@@ -151,86 +149,67 @@ const CreatePostScreen = ({ navigation }) => {
     );
   };
 
-  const renderContentTypeSelector = () => (
-    <View style={styles.contentTypeContainer}>
-      {CONTENT_TYPES.map((type) => (
-        <TouchableOpacity
-          key={type.id}
-          style={[
-            styles.contentTypeButton,
-            contentType === type.id && styles.activeContentType
-          ]}
-          onPress={() => setContentType(type.id)}
-        >
-          <Text style={[
-            styles.contentTypeText,
-            contentType === type.id && styles.activeContentTypeText
-          ]}>
-            {type.label}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+    <SafeAreaView className="flex-1 bg-white">
+      <StatusBar barStyle="dark-content" />
       
       {/* Header */}
-      <View style={styles.header}>
+      <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200">
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="close" size={28} color="#fff" />
+          <Ionicons name="close" size={28} color="#262626" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>New post</Text>
+        <Text className="text-lg font-semibold text-gray-800">New post</Text>
         <TouchableOpacity onPress={handleNext}>
-          <Text style={styles.nextButton}>Next</Text>
+          <Text className="text-blue-500 text-base font-semibold">Next</Text>
         </TouchableOpacity>
       </View>
       
       {/* Selected Image Preview */}
-      <View style={styles.previewContainer}>
+      <View className="w-full aspect-square bg-gray-100 relative">
         {selectedImage ? (
-          <Image source={{ uri: selectedImage }} style={styles.previewImage} />
+          <Image source={{ uri: selectedImage }} className="w-full h-full" resizeMode="contain" />
         ) : (
-          <View style={styles.noImagePlaceholder}>
-            <Text style={styles.noImageText}>No Image Selected</Text>
+          <View className="flex-1 justify-center items-center">
+            <Text className="text-gray-800">No Image Selected</Text>
           </View>
         )}
         
         {/* Crop/Expand button */}
-        <TouchableOpacity style={styles.expandButton}>
+        <TouchableOpacity className="absolute left-4 bottom-4 w-9 h-9 rounded-full bg-black/50 justify-center items-center">
           <MaterialIcons name="crop-free" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
       
       {/* Media Library Section */}
-      <View style={styles.libraryContainer}>
+      <View className="flex-1">
         {/* Recents Header */}
-        <View style={styles.recentsHeader}>
+        <View className="flex-row justify-between items-center px-4 py-3 border-b border-gray-200">
           <TouchableOpacity 
-            style={styles.recentsDropdown}
+            className="flex-row items-center"
             onPress={() => setIsRecentsOpen(!isRecentsOpen)}
           >
-            <Text style={styles.recentsText}>Recents</Text>
+            <Text className="text-gray-800 font-medium mr-1">Recents</Text>
             <Ionicons 
               name={isRecentsOpen ? "chevron-down" : "chevron-up"} 
               size={16} 
-              color="#fff" 
+              color="#262626" 
             />
           </TouchableOpacity>
           
-          <View style={styles.libraryActions}>
+          <View className="flex-row items-center">
             <TouchableOpacity 
-              style={styles.multiSelectButton}
+              className="flex-row items-center bg-gray-200 px-2.5 py-1.5 rounded mr-3"
               onPress={toggleMultiSelect}
             >
-              <Ionicons name="copy-outline" size={20} color="#fff" />
-              <Text style={styles.multiSelectText}>SELECT MULTIPLE</Text>
+              <Ionicons name="copy-outline" size={20} color="#262626" />
+              <Text className="text-gray-800 text-xs ml-1">SELECT MULTIPLE</Text>
             </TouchableOpacity>
             
-            <TouchableOpacity style={styles.cameraButton} onPress={handleTakePhoto}>
-              <Ionicons name="camera" size={24} color="#fff" />
+            <TouchableOpacity 
+              className="w-9 h-9 rounded-full bg-gray-200 justify-center items-center"
+              onPress={handleTakePhoto}
+            >
+              <Ionicons name="camera" size={24} color="#262626" />
             </TouchableOpacity>
           </View>
         </View>
@@ -243,189 +222,27 @@ const CreatePostScreen = ({ navigation }) => {
             keyExtractor={(item) => item.id}
             numColumns={4}
             initialNumToRender={12}
-            style={styles.mediaGrid}
+            className="flex-1"
           />
         )}
       </View>
       
       {/* Content Type Selector */}
-      {renderContentTypeSelector()}
+      <View className="flex-row justify-around items-center py-4 border-t border-gray-200 bg-white">
+        {CONTENT_TYPES.map((type) => (
+          <TouchableOpacity
+            key={type.id}
+            className={`px-4 py-2 rounded-full ${contentType === type.id ? 'bg-gray-200' : ''}`}
+            onPress={() => setContentType(type.id)}
+          >
+            <Text className={`text-sm font-semibold ${contentType === type.id ? 'text-gray-800' : 'text-gray-500'}`}>
+              {type.label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomColor: '#262626',
-    borderBottomWidth: 0.5,
-  },
-  headerTitle: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  nextButton: {
-    color: '#0095f6',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  previewContainer: {
-    width: width,
-    height: width,
-    backgroundColor: '#1a1a1a',
-    position: 'relative',
-  },
-  previewImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  noImagePlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noImageText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-  expandButton: {
-    position: 'absolute',
-    left: 16,
-    bottom: 16,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  libraryContainer: {
-    flex: 1,
-  },
-  recentsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomColor: '#262626',
-    borderBottomWidth: 0.5,
-  },
-  recentsDropdown: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  recentsText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '500',
-    marginRight: 4,
-  },
-  libraryActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  multiSelectButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#262626',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-    marginRight: 12,
-  },
-  multiSelectText: {
-    color: '#fff',
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  cameraButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#262626',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  mediaGrid: {
-    flex: 1,
-  },
-  mediaItem: {
-    width: THUMB_SIZE,
-    height: THUMB_SIZE,
-    padding: 1,
-  },
-  selectedMediaItem: {
-    opacity: 0.7,
-  },
-  mediaThumbnail: {
-    width: '100%',
-    height: '100%',
-  },
-  selectionIndicator: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    backgroundColor: '#0095f6',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#fff',
-  },
-  selectionNumber: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  videoBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  contentTypeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    paddingVertical: 16,
-    borderTopWidth: 0.5,
-    borderTopColor: '#262626',
-    backgroundColor: '#000',
-  },
-  contentTypeButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  activeContentType: {
-    backgroundColor: '#262626',
-  },
-  contentTypeText: {
-    color: '#8e8e8e',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  activeContentTypeText: {
-    color: '#fff',
-  },
-});
 
 export default CreatePostScreen;

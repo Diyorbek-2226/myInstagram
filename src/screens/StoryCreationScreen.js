@@ -1,8 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Image,
   TouchableOpacity,
   SafeAreaView,
@@ -11,6 +10,15 @@ import {
   TextInput,
 } from 'react-native';
 import { Ionicons, MaterialIcons, Feather, FontAwesome5 } from '@expo/vector-icons';
+import { styled } from 'nativewind';
+
+const StyledView = styled(View);
+const StyledText = styled(Text);
+const StyledTouchable = styled(TouchableOpacity);
+const StyledScrollView = styled(ScrollView);
+const StyledTextInput = styled(TextInput);
+const StyledImage = styled(Image);
+const StyledSafeAreaView = styled(SafeAreaView);
 
 const { width, height } = Dimensions.get('window');
 
@@ -22,83 +30,61 @@ const StoryCreationScreen = ({ route, navigation }) => {
   const [selectedColor, setSelectedColor] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
   
-  const handleClose = () => {
-    navigation.goBack();
-  };
-  
-  const handleShare = () => {
-    // Handle story sharing
-    navigation.navigate('Home', { storyShared: true });
-  };
+  const handleClose = () => navigation.goBack();
+  const handleShare = () => navigation.navigate('Home', { storyShared: true });
   
   const renderDrawingTools = () => (
-    <View style={styles.drawingToolsContainer}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        <TouchableOpacity style={styles.drawingTool}>
-          <Ionicons name="text" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <Ionicons name="brush" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <MaterialIcons name="format-shapes" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <Feather name="smile" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <MaterialIcons name="location-on" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <FontAwesome5 name="hashtag" size={20} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <MaterialIcons name="music-note" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <MaterialIcons name="link" size={24} color="#fff" />
-        </TouchableOpacity>
-        
-        <TouchableOpacity style={styles.drawingTool}>
-          <Ionicons name="poll" size={24} color="#fff" />
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
+    <StyledView className="mb-4">
+      <StyledScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {['text', 'brush', 'format-shapes', 'smile', 'location-on', 'hashtag', 'music-note', 'link', 'poll'].map((icon, index) => (
+          <StyledTouchable 
+            key={index}
+            className="w-10 h-10 rounded-full bg-black/50 justify-center items-center mr-3"
+          >
+            {index === 0 && <Ionicons name={icon} size={24} color="#fff" />}
+            {index === 1 && <Ionicons name={icon} size={24} color="#fff" />}
+            {index === 2 && <MaterialIcons name={icon} size={24} color="#fff" />}
+            {index === 3 && <Feather name={icon} size={24} color="#fff" />}
+            {index === 4 && <MaterialIcons name={icon} size={24} color="#fff" />}
+            {index === 5 && <FontAwesome5 name={icon} size={20} color="#fff" />}
+            {index === 6 && <MaterialIcons name={icon} size={24} color="#fff" />}
+            {index === 7 && <MaterialIcons name={icon} size={24} color="#fff" />}
+            {index === 8 && <Ionicons name={icon} size={24} color="#fff" />}
+          </StyledTouchable>
+        ))}
+      </StyledScrollView>
+    </StyledView>
   );
   
   const renderColorPicker = () => (
-    <View style={styles.colorPickerContainer}>
+    <StyledView className="flex-row justify-center mb-4">
       {DRAWING_COLORS.map((color, index) => (
-        <TouchableOpacity
+        <StyledTouchable
           key={index}
-          style={[
-            styles.colorOption,
-            { backgroundColor: color },
-            selectedColor === index && styles.selectedColor,
-          ]}
+          className={`w-7 h-7 rounded-full mx-1.5 ${selectedColor === index ? 'border-2 border-white' : ''}`}
+          style={{ backgroundColor: color }}
           onPress={() => setSelectedColor(index)}
         />
       ))}
-    </View>
+    </StyledView>
   );
   
   return (
-    <SafeAreaView style={styles.container}>
+    <StyledSafeAreaView className="flex-1 bg-black">
       {/* Story Preview */}
-      <View style={styles.storyPreview}>
-        <Image source={{ uri: image }} style={styles.storyImage} />
+      <StyledView className="absolute inset-0 justify-center items-center">
+        <StyledImage source={{ uri: image }} className="w-full h-full" resizeMode="cover" />
         
         {isTyping && (
-          <View style={styles.textInputContainer}>
-            <TextInput
-              style={[styles.textInput, { color: DRAWING_COLORS[selectedColor] }]}
+          <StyledView className="absolute p-5 w-full">
+            <StyledTextInput
+              className="text-2xl text-center"
+              style={{ 
+                color: DRAWING_COLORS[selectedColor],
+                textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 2,
+              }}
               placeholder="Type something..."
               placeholderTextColor="rgba(255,255,255,0.7)"
               multiline
@@ -106,167 +92,54 @@ const StoryCreationScreen = ({ route, navigation }) => {
               value={text}
               onChangeText={setText}
             />
-          </View>
+          </StyledView>
         )}
-      </View>
+      </StyledView>
       
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleClose}>
+      <StyledView className="absolute top-0 left-0 right-0 flex-row justify-between items-center p-4 z-10">
+        <StyledTouchable onPress={handleClose}>
           <Ionicons name="close" size={28} color="#fff" />
-        </TouchableOpacity>
+        </StyledTouchable>
         
-        <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton}>
+        <StyledView className="flex-row">
+          <StyledTouchable className="ml-4">
             <Ionicons name="save-outline" size={24} color="#fff" />
-          </TouchableOpacity>
+          </StyledTouchable>
           
-          <TouchableOpacity style={styles.headerButton}>
+          <StyledTouchable className="ml-4">
             <Ionicons name="settings-outline" size={24} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
+          </StyledTouchable>
+        </StyledView>
+      </StyledView>
       
       {/* Footer */}
-      <View style={styles.footer}>
+      <StyledView className="absolute bottom-0 left-0 right-0 p-4 z-10">
         {renderDrawingTools()}
         {renderColorPicker()}
         
-        <View style={styles.sendContainer}>
-          <TouchableOpacity style={styles.sendButton} onPress={handleShare}>
-            <Text style={styles.sendText}>Your Story</Text>
+        <StyledView className="flex-row items-center">
+          <StyledTouchable 
+            className="flex-row items-center bg-black/50 px-4 py-2 rounded-full mr-3"
+            onPress={handleShare}
+          >
+            <StyledText className="text-white text-sm mr-1">Your Story</StyledText>
             <Ionicons name="chevron-forward" size={20} color="#fff" />
-          </TouchableOpacity>
+          </StyledTouchable>
           
-          <TouchableOpacity style={styles.sendButton}>
-            <Text style={styles.sendText}>Close Friends</Text>
+          <StyledTouchable className="flex-row items-center bg-black/50 px-4 py-2 rounded-full mr-3">
+            <StyledText className="text-white text-sm mr-1">Close Friends</StyledText>
             <Ionicons name="chevron-forward" size={20} color="#fff" />
-          </TouchableOpacity>
+          </StyledTouchable>
           
-          <TouchableOpacity style={styles.moreButton}>
-            <Text style={styles.moreText}>More</Text>
+          <StyledTouchable className="flex-row items-center bg-black/50 px-3 py-2 rounded-full">
+            <StyledText className="text-white text-sm mr-1">More</StyledText>
             <Ionicons name="chevron-down" size={16} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
-    </SafeAreaView>
+          </StyledTouchable>
+        </StyledView>
+      </StyledView>
+    </StyledSafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  storyPreview: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  storyImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  textInputContainer: {
-    position: 'absolute',
-    padding: 20,
-    width: '100%',
-  },
-  textInput: {
-    fontSize: 24,
-    textAlign: 'center',
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    zIndex: 10,
-  },
-  headerActions: {
-    flexDirection: 'row',
-  },
-  headerButton: {
-    marginLeft: 16,
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    zIndex: 10,
-  },
-  drawingToolsContainer: {
-    marginBottom: 16,
-  },
-  drawingTool: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  colorPickerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  colorOption: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginHorizontal: 6,
-  },
-  selectedColor: {
-    borderWidth: 3,
-    borderColor: '#fff',
-  },
-  sendContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  sendButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    marginRight: 12,
-  },
-  sendText: {
-    color: '#fff',
-    fontSize: 14,
-    marginRight: 4,
-  },
-  moreButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-  },
-  moreText: {
-    color: '#fff',
-    fontSize: 14,
-    marginRight: 4,
-  },
-});
 
 export default StoryCreationScreen;

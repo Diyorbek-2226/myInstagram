@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
@@ -53,7 +52,6 @@ const ReelCreationScreen = ({ navigation }) => {
   const handleStopRecording = () => {
     clearInterval(timerRef.current);
     setIsRecording(false);
-    // Navigate to edit screen
     navigation.navigate('EditReel', { recordingTime });
   };
   
@@ -65,32 +63,29 @@ const ReelCreationScreen = ({ navigation }) => {
     <ScrollView 
       horizontal 
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.effectsContainer}
+      className="pb-4"
     >
       {EFFECTS.map((effect) => (
         <TouchableOpacity 
           key={effect.id}
-          style={[
-            styles.effectItem,
-            selectedEffect === effect.id && styles.selectedEffect
-          ]}
+          className={`items-center mr-4 ${selectedEffect === effect.id ? 'opacity-100' : 'opacity-70'}`}
           onPress={() => setSelectedEffect(effect.id)}
         >
           <MaterialIcons name={effect.icon} size={24} color="#fff" />
-          <Text style={styles.effectName}>{effect.name}</Text>
+          <Text className="text-white text-xs mt-1">{effect.name}</Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
   
   const renderAudioSelector = () => (
-    <View style={styles.audioSelectorContainer}>
+    <View className="mb-4">
       <TouchableOpacity 
-        style={styles.audioButton}
+        className="flex-row items-center bg-white/20 px-4 py-2.5 rounded-full"
         onPress={() => navigation.navigate('AudioSelector')}
       >
         <Ionicons name="musical-notes" size={24} color="#fff" />
-        <Text style={styles.audioButtonText}>
+        <Text className="text-white text-sm flex-1 ml-2">
           {selectedAudio ? selectedAudio.title : 'Add Audio'}
         </Text>
         <Ionicons name="chevron-forward" size={20} color="#fff" />
@@ -105,24 +100,24 @@ const ReelCreationScreen = ({ navigation }) => {
   };
   
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-black">
       {/* Camera Preview (Placeholder) */}
-      <View style={styles.cameraPreview}>
-        <Text style={styles.cameraPlaceholderText}>Camera Preview</Text>
+      <View className="absolute top-0 left-0 right-0 bottom-0 justify-center items-center bg-gray-900">
+        <Text className="text-white text-lg">Camera Preview</Text>
       </View>
       
       {/* Header */}
-      <View style={styles.header}>
+      <View className="absolute top-0 left-0 right-0 flex-row justify-between items-center p-4 z-10">
         <TouchableOpacity onPress={handleClose}>
           <Ionicons name="close" size={28} color="#fff" />
         </TouchableOpacity>
         
-        <View style={styles.headerActions}>
-          <TouchableOpacity style={styles.headerButton}>
+        <View className="flex-row">
+          <TouchableOpacity className="ml-4">
             <Ionicons name="flash-outline" size={24} color="#fff" />
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity className="ml-4">
             <Ionicons name="settings-outline" size={24} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -130,44 +125,41 @@ const ReelCreationScreen = ({ navigation }) => {
       
       {/* Recording Timer */}
       {isRecording && (
-        <View style={styles.timerContainer}>
-          <View style={styles.timerDot} />
-          <Text style={styles.timerText}>{formatTime(recordingTime)}</Text>
+        <View className="absolute top-14 self-center flex-row items-center bg-black/50 px-3 py-1.5 rounded-full">
+          <View className="w-2 h-2 rounded-full bg-red-500 mr-1.5" />
+          <Text className="text-white text-sm font-medium">{formatTime(recordingTime)}</Text>
         </View>
       )}
       
       {/* Progress Bar */}
-      <View style={styles.progressContainer}>
+      <View className="absolute top-0 left-0 right-0 h-1 bg-white/30 z-10">
         <View 
-          style={[
-            styles.progressBar, 
-            { width: `${(recordingTime / 30) * 100}%` }
-          ]} 
+          className="h-full bg-white" 
+          style={{ width: `${(recordingTime / 30) * 100}%` }}
         />
       </View>
       
       {/* Footer */}
-      <View style={styles.footer}>
+      <View className="absolute bottom-0 left-0 right-0 p-4 z-10">
         {/* Effects */}
         {renderEffects()}
         
         {/* Recording Controls */}
-        <View style={styles.controlsContainer}>
-          <TouchableOpacity style={styles.galleryButton}>
+        <View className="flex-row justify-around items-center mb-4">
+          <TouchableOpacity className="w-10 h-10 rounded-full bg-white/20 justify-center items-center">
             <Ionicons name="images" size={28} color="#fff" />
           </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[
-              styles.recordButton,
-              isRecording && styles.recordingButton
-            ]}
+            className={`w-16 h-16 rounded-full justify-center items-center border-4 ${
+              isRecording ? 'border-red-500' : 'border-white'
+            }`}
             onPress={isRecording ? handleStopRecording : handleStartRecording}
           >
-            {isRecording && <View style={styles.recordingInner} />}
+            {isRecording && <View className="w-7 h-7 rounded bg-red-500" />}
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.flipButton}>
+          <TouchableOpacity className="w-10 h-10 rounded-full bg-white/20 justify-center items-center">
             <Ionicons name="camera-reverse" size={28} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -176,205 +168,30 @@ const ReelCreationScreen = ({ navigation }) => {
         {renderAudioSelector()}
         
         {/* Speed Controls */}
-        <View style={styles.speedContainer}>
-          <TouchableOpacity style={styles.speedOption}>
-            <Text style={styles.speedText}>0.3x</Text>
+        <View className="flex-row justify-around items-center">
+          <TouchableOpacity className="px-3 py-1.5 rounded-full">
+            <Text className="text-white text-sm">0.3x</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.speedOption}>
-            <Text style={styles.speedText}>0.5x</Text>
+          <TouchableOpacity className="px-3 py-1.5 rounded-full">
+            <Text className="text-white text-sm">0.5x</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={[styles.speedOption, styles.selectedSpeed]}>
-            <Text style={[styles.speedText, styles.selectedSpeedText]}>1x</Text>
+          <TouchableOpacity className="px-3 py-1.5 rounded-full bg-white">
+            <Text className="text-black text-sm">1x</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.speedOption}>
-            <Text style={styles.speedText}>2x</Text>
+          <TouchableOpacity className="px-3 py-1.5 rounded-full">
+            <Text className="text-white text-sm">2x</Text>
           </TouchableOpacity>
           
-          <TouchableOpacity style={styles.speedOption}>
-            <Text style={styles.speedText}>3x</Text>
+          <TouchableOpacity className="px-3 py-1.5 rounded-full">
+            <Text className="text-white text-sm">3x</Text>
           </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  cameraPreview: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#1a1a1a',
-  },
-  cameraPlaceholderText: {
-    color: '#fff',
-    fontSize: 18,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    zIndex: 10,
-  },
-  headerActions: {
-    flexDirection: 'row',
-  },
-  headerButton: {
-    marginLeft: 16,
-  },
-  timerContainer: {
-    position: 'absolute',
-    top: 60,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  timerDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#f00',
-    marginRight: 6,
-  },
-  timerText: {
-    color: '#fff',
-    fontSize: 14,
-    fontWeight: '500',
-  },
-  progressContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    zIndex: 10,
-  },
-  progressBar: {
-    height: '100%',
-    backgroundColor: '#fff',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    zIndex: 10,
-  },
-  effectsContainer: {
-    paddingBottom: 16,
-  },
-  effectItem: {
-    alignItems: 'center',
-    marginRight: 16,
-    opacity: 0.7,
-  },
-  selectedEffect: {
-    opacity: 1,
-  },
-  effectName: {
-    color: '#fff',
-    fontSize: 12,
-    marginTop: 4,
-  },
-  controlsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  galleryButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  recordButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    borderWidth: 4,
-    borderColor: '#fff',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  recordingButton: {
-    borderColor: '#f00',
-  },
-  recordingInner: {
-    width: 30,
-    height: 30,
-    borderRadius: 6,
-    backgroundColor: '#f00',
-  },
-  flipButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  audioSelectorContainer: {
-    marginBottom: 16,
-  },
-  audioButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 24,
-  },
-  audioButtonText: {
-    color: '#fff',
-    fontSize: 14,
-    flex: 1,
-    marginLeft: 8,
-  },
-  speedContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-  },
-  speedOption: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  selectedSpeed: {
-    backgroundColor: '#fff',
-  },
-  speedText: {
-    color: '#fff',
-    fontSize: 14,
-  },
-  selectedSpeedText: {
-    color: '#000',
-  },
-});
 
 export default ReelCreationScreen;

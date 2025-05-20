@@ -11,9 +11,10 @@ import {
   StatusBar,
   ActivityIndicator,
   Animated,
+  Alert,
 } from "react-native"
 import { Video } from "expo-av"
-import { MaterialCommunityIcons, Ionicons, FontAwesome } from "@expo/vector-icons"
+import { FontAwesome, Ionicons } from "@expo/vector-icons"
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import { LinearGradient } from "expo-linear-gradient"
 import * as Haptics from "expo-haptics"
@@ -89,6 +90,7 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
   const videoRef = useRef(null)
   const [status, setStatus] = useState({})
   const [isLiked, setIsLiked] = useState(false)
+  const [likesCount, setLikesCount] = useState(item.likes || 0)
   const [isLoading, setIsLoading] = useState(true)
   const [isMuted, setIsMuted] = useState(false)
   const [showControls, setShowControls] = useState(true)
@@ -123,18 +125,38 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
     }
   }
 
-  const handleLikePress = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  const handleLike = () => {
     setIsLiked(!isLiked)
+    setLikesCount(prev => isLiked ? prev - 1 : prev + 1)
     onLike(item.id)
   }
 
-  const handleDoubleTap = () => {
-    if (!isLiked) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      setIsLiked(true)
-      onLike(item.id)
-    }
+  const handleComment = () => {
+    navigation.navigate('Comments', { 
+      postId: item.id,
+      type: 'reel'
+    })
+  }
+
+  const handleShare = () => {
+    Alert.alert(
+      'Ulashish',
+      'Reelsni ulashish uchun platformani tanlang',
+      [
+        {
+          text: 'Telegram',
+          onPress: () => console.log('Telegram orqali ulashildi'),
+        },
+        {
+          text: 'WhatsApp',
+          onPress: () => console.log('WhatsApp orqali ulashildi'),
+        },
+        {
+          text: 'Bekor qilish',
+          style: 'cancel',
+        },
+      ]
+    )
   }
 
   const toggleMute = () => {
@@ -151,7 +173,6 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
         activeOpacity={1}
         style={styles.videoContainer}
         onPress={handleVideoPress}
-        onLongPress={handleDoubleTap}
       >
         <Video
           ref={videoRef}
@@ -161,7 +182,7 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
           isLooping
           shouldPlay={index === currentIndex}
           isMuted={isMuted}
-          onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+          onPlaybackStatusUpdate={setStatus}
           onLoadStart={() => setIsLoading(true)}
           onLoad={() => setIsLoading(false)}
           useNativeControls={false}
@@ -170,6 +191,18 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
         {isLoading && (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size="large" color="#fff" />
+          </View>
+        )}
+
+        {showControls && (
+          <View style={styles.controls}>
+            <TouchableOpacity onPress={toggleMute}>
+              <FontAwesome
+                name={isMuted ? "volume-off" : "volume-up"}
+                size={24}
+                color="#fff"
+              />
+            </TouchableOpacity>
           </View>
         )}
       </TouchableOpacity>
@@ -192,26 +225,26 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
 
       {/* Right side controls */}
       <View style={styles.rightControls}>
-        <TouchableOpacity style={styles.controlButton} onPress={handleLikePress}>
-          <MaterialCommunityIcons
-            name={isLiked ? "heart" : "heart-outline"}
+        <TouchableOpacity style={styles.controlButton} onPress={handleLike}>
+          <FontAwesome
+            name={isLiked ? "heart" : "heart-o"}
             size={30}
-            color={isLiked ? "#FF3040" : "#fff"}
+            color={isLiked ? "#ed4956" : "#fff"}
           />
-          <Text style={styles.controlText}>{item.likes}</Text>
+          <Text style={styles.controlText}>{likesCount}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.controlButton} onPress={handleComment}>
+          <FontAwesome name="comment-o" size={30} color="#fff" />
+          <Text style={styles.controlText}>{item.comments || 0}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.controlButton} onPress={handleShare}>
+          <FontAwesome name="share" size={30} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.controlButton}>
-          <MaterialCommunityIcons name="comment-outline" size={30} color="#fff" />
-          <Text style={styles.controlText}>{item.comments}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.controlButton}>
-          <Ionicons name="paper-plane-outline" size={28} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.controlButton}>
-          <MaterialCommunityIcons name="dots-vertical" size={30} color="#fff" />
+          <FontAwesome name="bookmark-o" size={30} color="#fff" />
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.audioButton}>
@@ -225,7 +258,7 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
           <Image source={{ uri: item.user.profilePic }} style={styles.profilePic} />
           <Text style={styles.username}>{item.user.username}</Text>
           {item.user.isVerified && (
-            <MaterialCommunityIcons name="check-circle" size={14} color="#3897f0" style={styles.verifiedBadge} />
+            <FontAwesome name="check-circle" size={14} color="#3897f0" style={styles.verifiedBadge} />
           )}
           {!item.isFollowing && (
             <TouchableOpacity style={styles.followButton}>
@@ -237,7 +270,7 @@ const ReelItem = ({ item, index, currentIndex, onLike, navigation }) => {
         <Text style={styles.description}>{item.description}</Text>
 
         <View style={styles.musicSection}>
-          <MaterialCommunityIcons name="music-note" size={16} color="#fff" />
+          <FontAwesome name="music" size={16} color="#fff" />
           <Text style={styles.musicText}>{item.music}</Text>
           <FontAwesome name="angle-right" size={16} color="#fff" style={styles.musicArrow} />
         </View>
